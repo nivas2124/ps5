@@ -178,6 +178,32 @@
   #payloadMenu .payloadTile img { display:block; width:330px; height:72px;
     max-width:100%; margin:0 auto; }
   #payloadMenu .payloadTile.busy { opacity:.42; }
+  #payloadMenu .autoloadCard {
+    box-sizing:border-box; display:block; position:relative; width:330px; height:72px;
+    max-width:100%; border:2px solid #4d82c8; border-radius:13px;
+    background:#17263d; color:#fff; font-family:Arial,sans-serif; text-align:left;
+    overflow:hidden;
+  }
+  #payloadMenu .autoloadIcon {
+    display:block; position:absolute; left:12px; top:13px; width:42px; height:42px;
+    line-height:42px; text-align:center; border-radius:50%; background:#3b82f6;
+    color:#fff; font-size:9px; font-weight:800; letter-spacing:.02em;
+  }
+  #payloadMenu .autoloadText {
+    display:block; position:absolute; left:72px; top:14px; right:8px; height:48px;
+    color:#fff; overflow:visible;
+  }
+  #payloadMenu .autoloadText strong {
+    display:block; margin:0; padding:0; color:#fff; font-family:Arial,sans-serif;
+    font-size:16px; font-weight:700; line-height:20px; white-space:nowrap;
+  }
+  #payloadMenu .autoloadText small {
+    display:block; margin:4px 0 0; padding:0; color:#c8d3e4; font-family:Arial,sans-serif;
+    font-size:12px; font-weight:400; line-height:16px; white-space:nowrap;
+  }
+  #payloadMenu .autoloadCard.sending { border-color:#f0ad4e; }
+  #payloadMenu .autoloadCard.sent { border-color:#16c60c; }
+  #payloadMenu .autoloadCard.failed { border-color:#e74856; }
 
   #wrap { display:none !important; }
 </style>
@@ -198,11 +224,12 @@
 <pre id="scr"></pre>
 <div id="payloadMenu">
   <img class="menuTitle" data-src="../ui/payload-menu-title.png" alt="">
+  <a class="payloadTile" href="#" data-name="ps5_autoload.elf" data-key="autoload"><img data-src="../ui/payload-autoload-default.png" alt="PS5 AUTOLOAD"></a>
   <a class="payloadTile" href="#" data-name="ftpsrv-ps5.elf" data-key="ftp"><img data-src="../ui/payload-ftp-default.png" alt=""></a>
   <a class="payloadTile" href="#" data-name="gdbsrv-ps5.elf" data-key="gdb"><img data-src="../ui/payload-gdb-default.png" alt=""></a>
-  <a class="payloadTile" href="#" data-name="klogsrv-ps5.elf" data-key="klog"><img data-src="../ui/payload-klog-default.png" alt=""></a>
   <a class="payloadTile" href="#" data-name="shsrv-ps5.elf" data-key="shell"><img data-src="../ui/payload-shell-default.png" alt=""></a>
   <a class="payloadTile" href="#" data-name="websrv-ps5.elf" data-key="web"><img data-src="../ui/payload-web-default.png" alt=""></a>
+  <a class="payloadTile" href="#" data-name="klogsrv-ps5.elf" data-key="klog"><img data-src="../ui/payload-klog-default.png" alt=""></a>
 </div>
 <div id="nav"></div>
 <div id="arm" hidden>Open this page with <b>?go=1</b> to arm it. Nothing runs
@@ -552,7 +579,7 @@ async function sendPayloadToElfldr(name) {
         throw new Error("the ROP chain is unusable after " + chainDead);
     if (payloadSenderBlocked)
         throw new Error(payloadSenderBlocked);
-    if (!payloadIsListed(name))
+    if (!payloadIsListed(name) && name !== "ps5_autoload.elf")
         throw new Error("payload is not listed in this menu");
 
     const response = await fetch("../payloads/" + encodeURIComponent(name),
@@ -1468,6 +1495,7 @@ async function runLadder() {
         flushMark("ELFLDR-MENU-INPAGE",
             "no-navigation-parked-racers-and-fds-remain-owned-port=9021");
         showPayloadMenu();
+
     }
 }
 
